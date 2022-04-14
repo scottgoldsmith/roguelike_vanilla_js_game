@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<title>Scott's Roguelike Vanilla JS</title>
+
+<style>
+	canvas {
+		outline: 1px solid black;
+	}
+
+	body {
+		background-color: lightgrey;
+		text-align: center;
+		margin-top: 150px;
+	}
+</style>
+
+<body>
+	<p>Scott's Roguelike Vanilla JS Game</p>
+</body>
+<canvas></canvas>
+<script>
+
+	//variables
+	tileSize = 64;
+	numTiles = 9;
+	uiWidth = 2;
+	//variables
+
+	function setupCanvas() {
+		canvas = document.querySelector("canvas");
+		ctx = canvas.getContext("2d");
+		canvas.width = tileSize * (numTiles + uiWidth);
+		canvas.height = tileSize * numTiles;
+		canvas.style.width = canvas.width + 'px';
+		canvas.style.height = canvas.height + 'px';
+	}
+	//initial player stats
+	x = 1;
+	y = 2;
+	hp = 4;
+
+	walls = [];
+	//fill outer walls
+	outx = 0;
+	outy = 1;
+	while (outy < numTiles + 1) {
+		if (outx === 0 || outx === numTiles - 1 || outy === 1 || outy === numTiles) {
+			var wallspawn = new wall(outx, outy);
+			walls.push(wallspawn);
+		}
+		outx++;
+		if (outx >= numTiles) {
+			outx = 0;
+			outy++;
+		}
+	}
+
+	enemies = [];
+
+	//Math.floor(Math.random() * (UpperRange - LowerRange + 1)) + LowerRange; 
+	var spawn1 = Math.floor(Math.random() * (numTiles - 2 + 1)) + 1;
+	var spawn2 = Math.floor(Math.random() * (numTiles - 1 + 1)) + 1;
+	var enem1 = new enemy(spawn1, spawn2);
+	enemies.push(enem1);
+
+	var enem1 = new enemy(6, 2);
+	enemies.push(enem1);
+
+	//Enemy constructor
+	function enemy(x, y) {
+		this.x = x;
+		this.y = y;
+		this.speed = 50;
+		this.show = function () {
+			ctx.fillStyle = "yellow";
+			ctx.fillRect(this.x * tileSize, this.y * tileSize - tileSize, tileSize, tileSize);
+			ctx.fillStyle = "black";
+			ctx.fillText(this.x + "/" + this.y, this.x * tileSize + (tileSize / 2), this.y * tileSize - (tileSize / 2), tileSize, tileSize);
+		}
+	}
+
+	//wall constructor
+	function wall(x, y) {
+		this.x = x;
+		this.y = y;
+		this.show = function () {
+			ctx.fillStyle = "black";
+			ctx.fillRect(this.x * tileSize, this.y * tileSize - tileSize, tileSize, tileSize);
+		}
+	}
+
+	w1x = Math.floor(Math.random() * (numTiles - 2 + 1)) + 1;
+	if (w1x >= numTiles) w1x--;
+	w1y = Math.floor(Math.random() * (numTiles - 1 + 1)) + 1;
+	if (w1y >= numTiles) w1y--;
+
+	document.querySelector("html").onkeypress = function (e) {
+		if (e.key == "w") {
+			if (y > 1) y--;
+			if (y == w1y && x == w1x) {
+				y++;//reset, b/c we're in a wall!
+			}
+			else {//successful end of player turn, now let AI work 
+				//if we collide with AI
+				for (var i = 0; i < enemies.length; i++) {
+					if (x == enemies[i].x && y == enemies[i].y) {
+						enemies.splice(i, 1);//remove enemy
+						y++;//move back
+						hp--;//loss hp
+					}
+				}
+				for (var i = 0; i < walls.length; i++) {
+					if (x == walls[i].x && y == walls[i].y) {
+						y++;//move back
+					}
+				}
+			}
+		}
+		if (e.key == "s") {
+			if (y < numTiles) y++;
+			if (y == w1y && x == w1x) {
+				y--;//reset, b/c we're in a wall!
+			}
+			else {//successful end of player turn, now let AI work 
+				//if we collide with AI
+				for (var i = 0; i < enemies.length; i++) {
+					if (x == enemies[i].x && y == enemies[i].y) {
+						enemies.splice(i, 1);//remove enemy
+						y--;//move back
+						hp--;//loss hp
+					}
+				}
+				for (var i = 0; i < walls.length; i++) {
+					if (x == walls[i].x && y == walls[i].y) {
+						y--;//move back
+					}
+				}
+			}
+		}
+
+		if (e.key == "a") {
+			if (x > 0) x--;
+			if (y == w1y && x == w1x) {
+				x++;//reset, b/c we're in a wall!
+			}
+			else {//successful end of player turn, now let AI work 
+				//if we collide with AI
+				for (var i = 0; i < enemies.length; i++) {
+					if (x == enemies[i].x && y == enemies[i].y) {
+						enemies.splice(i, 1);//remove enemy
+						x++;//move back
+						hp--;//loss hp
+					}
+				}
+				for (var i = 0; i < walls.length; i++) {
+					if (x == walls[i].x && y == walls[i].y) {
+						x++;//move back
+					}
+				}
+			}
+
+		}
+		if (e.key == "d") {
+			if (x < numTiles - 1) x++;
+			if (y == w1y && x == w1x) {//we didn't move succesfully
+				x--;//reset, b/c we're in a wall!
+			}
+			else {//successful end of player turn, now let AI work 
+				//if we collide with AI
+				for (var i = 0; i < enemies.length; i++) {
+					if (x == enemies[i].x && y == enemies[i].y) {
+						enemies.splice(i, 1);//remove enemy
+						x--;//move back
+						hp--;//loss hp
+					}
+				}
+				for (var i = 0; i < walls.length; i++) {
+					if (x == walls[i].x && y == walls[i].y) {
+						x--;//move back
+					}
+				}
+
+			}
+			if (e.key == '0') {//testing for ai movement/actions
+				runAI();
+			}
+		}
+
+	}
+
+	function runAI() {
+		//move all AI
+		for (var i = 0; i < enemies.length; i++) {
+			enemies[i].x++;
+			enemies[i].y++;
+		}
+	}
+
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		//Draws enemies
+		for (var i = 0; i < enemies.length; i++) {
+			enemies[i].show();
+		}
+		//Draws walls
+		for (var i = 0; i < walls.length; i++) {
+			walls[i].show();
+		}
+		ctx.fillText("@", x * tileSize + (tileSize / 2 - 3), y * tileSize - (tileSize / 2 - 1), tileSize, tileSize);
+		ctx.fillText(x + "/" + y, x * tileSize + (tileSize / 2), y * tileSize - (tileSize / 4), tileSize, tileSize);
+		//draw squares for movement
+		var xx = -1;
+		var yy = 1;
+		while (yy <= numTiles) {
+			xx++;
+			if (xx >= numTiles) {
+				xx = 0;
+				yy++;
+			}
+			ctx.strokeRect(xx * tileSize, yy * tileSize - (tileSize), tileSize, tileSize);
+		}
+		//draw wall
+		ctx.fillRect(w1x * tileSize, w1y * tileSize - (tileSize), tileSize, tileSize);
+		//draw UI
+		ctx.fillText("HP: " + hp + " " + enemies.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1), tileSize, tileSize);
+	}
+
+	setInterval(draw, 15);
+	setupCanvas();
+
+</script>

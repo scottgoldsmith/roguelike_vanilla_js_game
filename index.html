@@ -37,6 +37,7 @@
 	x = 1;
 	y = 2;
 	hp = 4;
+	spawnTotal = 2;//number of enemies to spawn
 
 	walls = [];
 	//fill outer walls
@@ -56,14 +57,14 @@
 
 	enemies = [];
 
-	//Math.floor(Math.random() * (UpperRange - LowerRange + 1)) + LowerRange; 
-	var spawn1 = Math.floor(Math.random() * (numTiles - 2 + 1)) + 1;
-	var spawn2 = Math.floor(Math.random() * (numTiles - 1 + 1)) + 1;
-	var enem1 = new enemy(spawn1, spawn2);
-	enemies.push(enem1);
+	while (enemies.length < spawnTotal) {
+		//Math.floor(Math.random() * (UpperRange - LowerRange + 1)) + LowerRange; 
+		var spawn1 = Math.floor(Math.random() * (numTiles - 2)) + 1;
+		var spawn2 = Math.floor(Math.random() * (numTiles - 2)) + 2;
+		var enem1 = new enemy(spawn1, spawn2);
+		enemies.push(enem1);
+	}
 
-	var enem1 = new enemy(6, 2);
-	enemies.push(enem1);
 
 	//Enemy constructor
 	function enemy(x, y) {

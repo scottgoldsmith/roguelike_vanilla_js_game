@@ -93,10 +93,10 @@
 		}
 	}
 
-	w1x = Math.floor(Math.random() * (numTiles - 2 + 1)) + 1;
-	if (w1x >= numTiles) w1x--;
-	w1y = Math.floor(Math.random() * (numTiles - 1 + 1)) + 1;
-	if (w1y >= numTiles) w1y--;
+	w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
+	w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
+	var new_wall = new wall(w1x, w1y);
+	walls.push(new_wall);
 
 	document.querySelector("html").onkeypress = function (e) {
 		if (e.key == "w") {
@@ -226,8 +226,6 @@
 			}
 			ctx.strokeRect(xx * tileSize, yy * tileSize - (tileSize), tileSize, tileSize);
 		}
-		//draw wall
-		ctx.fillRect(w1x * tileSize, w1y * tileSize - (tileSize), tileSize, tileSize);
 		//draw UI
 		ctx.fillText("HP: " + hp + " " + enemies.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1), tileSize, tileSize);
 	}

@@ -71,11 +71,12 @@
 		this.x = x;
 		this.y = y;
 		this.speed = 50;
+		this.hp = Math.floor(Math.random() * (2) + 1);//random number 1 or 2
 		this.show = function () {
 			ctx.fillStyle = "yellow";
 			ctx.fillRect(this.x * tileSize, this.y * tileSize - tileSize, tileSize, tileSize);
 			ctx.fillStyle = "black";
-			ctx.fillText(this.x + "/" + this.y, this.x * tileSize + (tileSize / 2), this.y * tileSize - (tileSize / 2), tileSize, tileSize);
+			ctx.fillText(this.x + "/" + this.y + " " + this.hp, this.x * tileSize + (tileSize / 2), this.y * tileSize - (tileSize / 2), tileSize, tileSize);
 		}
 	}
 
@@ -86,10 +87,7 @@
 		this.show = function () {
 			ctx.font = "70px Arial";
 			ctx.fillText("#", x * tileSize + (tileSize / 4 - 3), y * tileSize - (tileSize / 6 - 1), tileSize, tileSize);
-			//reset font size
-			ctx.font = "12px Arial";
-			//ctx.fillStyle = "black";
-			//ctx.fillRect(this.x * tileSize, this.y * tileSize - tileSize, tileSize, tileSize);
+			ctx.font = "12px Arial";//reset font size
 		}
 	}
 
@@ -108,9 +106,12 @@
 				//if we collide with AI
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
-						enemies.splice(i, 1);//remove enemy
 						y++;//move back
 						hp--;//loss hp
+						enemies[i].hp--;//enemy loses hp
+						if (enemies[i].hp <= 0) {
+							enemies.splice(i, 1);//remove enemy
+						}
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -129,9 +130,12 @@
 				//if we collide with AI
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
-						enemies.splice(i, 1);//remove enemy
 						y--;//move back
 						hp--;//loss hp
+						enemies[i].hp--;//enemy loses hp
+						if (enemies[i].hp <= 0) {
+							enemies.splice(i, 1);//remove enemy
+						}
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -151,9 +155,12 @@
 				//if we collide with AI
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
-						enemies.splice(i, 1);//remove enemy
 						x++;//move back
 						hp--;//loss hp
+						enemies[i].hp--;//enemy loses hp
+						if (enemies[i].hp <= 0) {
+							enemies.splice(i, 1);//remove enemy
+						}
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -173,9 +180,12 @@
 				//if we collide with AI
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
-						enemies.splice(i, 1);//remove enemy
 						x--;//move back
 						hp--;//loss hp
+						enemies[i].hp--;//enemy loses hp
+						if (enemies[i].hp <= 0) {
+							enemies.splice(i, 1);//remove enemy
+						}
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {

@@ -9,7 +9,7 @@
 	body {
 		background-color: lightgrey;
 		text-align: center;
-		margin-top: 150px;
+		margin-top: 75px;
 	}
 </style>
 
@@ -37,7 +37,9 @@
 	y = 2;
 	hp = 4;
 	dmg = 1;
-	spawnTotal = 3;//number of enemies to spawn
+	spawnTotal = 8;//number of enemies to spawn
+	wallTotal = 8;//number of interior walls to spawn
+	existingInteriorWalls = 0;
 
 	walls = [];
 
@@ -70,14 +72,17 @@
 
 	function spawnInteriorWall() {
 		//spawn interior walls, not part of the outerbounds
-		w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
-		w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
-		if (w1x !== x && w1y !== y) {//don't spawn on player
-			var new_wall = new wall(w1x, w1y);
-			walls.push(new_wall);
-		}
-		else {
-			spawnInteriorWall();
+		while (existingInteriorWalls < wallTotal) {
+			w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
+			w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
+			if (w1x !== x && w1y !== y) {//don't spawn on player
+				var new_wall = new wall(w1x, w1y);
+				walls.push(new_wall);
+				existingInteriorWalls++;
+			}
+			else {
+				spawnInteriorWall();
+			}
 		}
 	}
 

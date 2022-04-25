@@ -19,11 +19,11 @@
 <canvas></canvas>
 <script>
 
-	//variables
+	//board variables
 	tileSize = 64;
 	numTiles = 9;
 	uiWidth = 2;
-	//variables
+	//board variables
 
 	function setupCanvas() {
 		canvas = document.querySelector("canvas");
@@ -37,7 +37,7 @@
 	x = 1;
 	y = 2;
 	hp = 4;
-	spawnTotal = 2;//number of enemies to spawn
+	spawnTotal = 3;//number of enemies to spawn
 
 	walls = [];
 	//fill outer walls
@@ -55,16 +55,53 @@
 		}
 	}
 
-	enemies = [];
-
-	while (enemies.length < spawnTotal) {
-		//Math.floor(Math.random() * (UpperRange - LowerRange + 1)) + LowerRange; 
-		var spawn1 = Math.floor(Math.random() * (numTiles - 2)) + 1;
-		var spawn2 = Math.floor(Math.random() * (numTiles - 2)) + 2;
-		var enem1 = new enemy(spawn1, spawn2);
-		enemies.push(enem1);
+	function checker() {//we check to make sure enemies aren't in walls
+		for (var i = 0; i < walls.length; i++) {
+			for (var ii = 0; ii < enemies.length; ii++) {
+				if (walls[i].x == enemies[ii].x && walls[i].y == enemies[ii].y) {
+					enemies.splice(ii, 1);//remove enemy
+					alert("REMOVED");
+				}
+			}
+		}
 	}
 
+
+	//spawn interior walls, not part of the outerbounds
+	spawnInteriorWall();
+
+	function spawnInteriorWall() {
+		//spawn interior walls, not part of the outerbounds
+		w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
+		w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
+		if (w1x !== x && w1y !== y) {//don't spawn on player
+			var new_wall = new wall(w1x, w1y);
+			walls.push(new_wall);
+		}
+		else {
+			spawnInteriorWall();
+		}
+	}
+
+	enemies = [];
+
+	function spawnEnemy() {
+		while (enemies.length < spawnTotal) {
+			spawn1 = Math.floor(Math.random() * (numTiles - 2)) + 1;
+			spawn2 = Math.floor(Math.random() * (numTiles - 2)) + 2;
+			if (spawn1 !== x && spawn2 !== y) {//don't spawn on player
+				var enem1 = new enemy(spawn1, spawn2);
+				enemies.push(enem1);
+			}
+			else {
+				spawnEnemy();
+			}
+			checker();//remove enemy if we are on top of enemy
+		}
+
+	}
+
+	spawnEnemy();
 
 	//Enemy constructor
 	function enemy(x, y) {
@@ -91,21 +128,6 @@
 		}
 	}
 
-	//spawn interior walls, not part of the outerbounds
-	spawnInteriorWall();
-
-	function spawnInteriorWall() {
-		//spawn interior walls, not part of the outerbounds
-		w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
-		w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
-		if (w1x !== x && w1y !== y) {//don't spawn on player
-			var new_wall = new wall(w1x, w1y);
-			walls.push(new_wall);
-		}
-		else {
-			spawnInteriorWall();
-		}
-	}
 
 
 	document.querySelector("html").onkeypress = function (e) {
@@ -208,7 +230,8 @@
 
 			}
 			if (e.key == '0') {//testing for ai movement/actions
-				runAI();
+				//runAI();
+				checker();
 			}
 		}
 

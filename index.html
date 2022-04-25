@@ -19,8 +19,7 @@
 <canvas></canvas>
 <script>
 
-	//board variables
-	tileSize = 64;
+	tileSize = 64;//board variables
 	numTiles = 9;
 	uiWidth = 2;
 	//board variables
@@ -33,15 +32,16 @@
 		canvas.style.width = canvas.width + 'px';
 		canvas.style.height = canvas.height + 'px';
 	}
-	//initial player stats
-	x = 1;
+
+	x = 1;//initial player stats
 	y = 2;
 	hp = 4;
+	dmg = 1;
 	spawnTotal = 3;//number of enemies to spawn
 
 	walls = [];
-	//fill outer walls
-	outx = 0;
+
+	outx = 0;//fill outer walls
 	outy = 1;
 	while (outy < numTiles + 1) {
 		if (outx === 0 || outx === numTiles - 1 || outy === 1 || outy === numTiles) {
@@ -60,12 +60,10 @@
 			for (var ii = 0; ii < enemies.length; ii++) {
 				if (walls[i].x == enemies[ii].x && walls[i].y == enemies[ii].y) {
 					enemies.splice(ii, 1);//remove enemy
-					alert("REMOVED");
 				}
 			}
 		}
 	}
-
 
 	//spawn interior walls, not part of the outerbounds
 	spawnInteriorWall();
@@ -96,7 +94,7 @@
 			else {
 				spawnEnemy();
 			}
-			checker();//remove enemy if we are on top of enemy
+			checker();//remove enemy if we are on top of an interior wall
 		}
 
 	}
@@ -128,8 +126,6 @@
 		}
 	}
 
-
-
 	document.querySelector("html").onkeypress = function (e) {
 		if (e.key == "w") {
 			if (y > 1) y--;
@@ -141,11 +137,7 @@
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
 						y++;//move back
-						hp--;//loss hp
-						enemies[i].hp--;//enemy loses hp
-						if (enemies[i].hp <= 0) {
-							enemies.splice(i, 1);//remove enemy
-						}
+						combat(i);
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -165,11 +157,7 @@
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
 						y--;//move back
-						hp--;//loss hp
-						enemies[i].hp--;//enemy loses hp
-						if (enemies[i].hp <= 0) {
-							enemies.splice(i, 1);//remove enemy
-						}
+						combat(i);
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -190,11 +178,7 @@
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
 						x++;//move back
-						hp--;//loss hp
-						enemies[i].hp--;//enemy loses hp
-						if (enemies[i].hp <= 0) {
-							enemies.splice(i, 1);//remove enemy
-						}
+						combat(i);
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -203,7 +187,6 @@
 					}
 				}
 			}
-
 		}
 		if (e.key == "d") {
 			if (x < numTiles - 1) x++;
@@ -215,11 +198,7 @@
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
 						x--;//move back
-						hp--;//loss hp
-						enemies[i].hp--;//enemy loses hp
-						if (enemies[i].hp <= 0) {
-							enemies.splice(i, 1);//remove enemy
-						}
+						combat(i);
 					}
 				}
 				for (var i = 0; i < walls.length; i++) {
@@ -227,14 +206,21 @@
 						x--;//move back
 					}
 				}
-
 			}
 			if (e.key == '0') {//testing for ai movement/actions
-				//runAI();
-				checker();
+				runAI();
 			}
 		}
+	}
 
+	function combat(i) {
+		enemies[i].hp -= dmg;//enemy loses hp relative to dmg
+		if (enemies[i].hp <= 0) {
+			enemies.splice(i, 1);//remove enemy
+		}
+		else if (enemies[i].hp >= dmg) {
+			hp--;//attacks player, b/c not dead
+		}
 	}
 
 	function runAI() {
@@ -272,7 +258,8 @@
 			ctx.strokeRect(xx * tileSize, yy * tileSize - (tileSize), tileSize, tileSize);
 		}
 		//draw UI
-		ctx.fillText("HP: " + hp + " " + enemies.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1), tileSize, tileSize);
+		ctx.fillText("HP: " + hp, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1), tileSize, tileSize);
+		ctx.fillText("Enemy Pop: " + enemies.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1) + 20, tileSize, tileSize);
 	}
 
 	setInterval(draw, 15);

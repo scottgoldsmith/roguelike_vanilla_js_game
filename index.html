@@ -91,10 +91,22 @@
 		}
 	}
 
-	w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
-	w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
-	var new_wall = new wall(w1x, w1y);
-	walls.push(new_wall);
+	//spawn interior walls, not part of the outerbounds
+	spawnInteriorWall();
+
+	function spawnInteriorWall() {
+		//spawn interior walls, not part of the outerbounds
+		w1x = Math.floor(Math.random() * (numTiles - 2)) + 1;
+		w1y = Math.floor(Math.random() * (numTiles - 2)) + 2;
+		if (w1x !== x && w1y !== y) {//don't spawn on player
+			var new_wall = new wall(w1x, w1y);
+			walls.push(new_wall);
+		}
+		else {
+			spawnInteriorWall();
+		}
+	}
+
 
 	document.querySelector("html").onkeypress = function (e) {
 		if (e.key == "w") {

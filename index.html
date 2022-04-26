@@ -19,9 +19,9 @@
 <canvas></canvas>
 <script>
 
-	tileSize = 64;//board variables
-	numTiles = 9;
-	uiWidth = 2;
+	let tileSize = 64;//board variables
+	let numTiles = 9;
+	let uiWidth = 2;
 	//board variables
 
 	function setupCanvas() {
@@ -33,18 +33,18 @@
 		canvas.style.height = canvas.height + 'px';
 	}
 
-	x = 1;//initial player stats
-	y = 2;
-	hp = 4;
-	dmg = 1;
-	spawnTotal = 8;//number of enemies to spawn
-	wallTotal = 8;//number of interior walls to spawn
-	existingInteriorWalls = 0;
+	let x = 1;//initial player stats
+	let y = 2;
+	let hp = 4;
+	let dmg = 1;
+	let spawnTotal = 2;//number of enemies to spawn
+	let wallTotal = 4;//number of interior walls to spawn
+	let existingInteriorWalls = 0;
 
-	walls = [];
+	let walls = [];
 
-	outx = 0;//fill outer walls
-	outy = 1;
+	let outx = 0;//fill outer walls
+	let outy = 1;
 	while (outy < numTiles + 1) {
 		if (outx === 0 || outx === numTiles - 1 || outy === 1 || outy === numTiles) {
 			var wallspawn = new wall(outx, outy);
@@ -128,6 +128,7 @@
 			ctx.font = "70px Arial";
 			ctx.fillText("#", x * tileSize + (tileSize / 4 - 3), y * tileSize - (tileSize / 6 - 1), tileSize, tileSize);
 			ctx.font = "12px Arial";//reset font size
+			ctx.fillText(this.x + "/" + this.y, x * tileSize + (tileSize / 4 - 3) + 10, y * tileSize - (tileSize / 6 - 1) + 10, tileSize, tileSize);
 		}
 	}
 
@@ -212,9 +213,9 @@
 					}
 				}
 			}
-			if (e.key == '0') {//testing for ai movement/actions
-				runAI();
-			}
+		}
+		if (e.key == 'q') {//testing for ai movement/actions
+			runAI();
 		}
 	}
 
@@ -230,9 +231,12 @@
 
 	function runAI() {
 		//move all AI
-		for (var i = 0; i < enemies.length; i++) {
-			enemies[i].x++;
-			enemies[i].y++;
+		for (var iv = 0; iv < enemies.length; iv++) {
+			//if we collide with AI
+			if (enemies[iv].x !== enemies[iv + 1].x) {
+				enemies[iv].x++;
+				enemies[iv].y++;
+			}
 		}
 	}
 

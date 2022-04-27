@@ -152,6 +152,7 @@
 					}
 				}
 			}
+			runAI();
 		}
 		if (e.key == "s") {
 			if (y < numTiles) y++;
@@ -172,6 +173,7 @@
 					}
 				}
 			}
+			runAI();
 		}
 
 		if (e.key == "a") {
@@ -193,6 +195,7 @@
 					}
 				}
 			}
+			runAI();
 		}
 		if (e.key == "d") {
 			if (x < numTiles - 1) x++;
@@ -213,6 +216,7 @@
 					}
 				}
 			}
+			runAI();
 		}
 		if (e.key == 'q') {//testing for ai movement/actions
 			runAI();
@@ -231,12 +235,29 @@
 
 	function runAI() {
 		//move all AI
-		for (var iv = 0; iv < enemies.length; iv++) {
-			//if we collide with AI
-			if (enemies[iv].x !== enemies[iv + 1].x) {
-				enemies[iv].x++;
-				enemies[iv].y++;
+		for (var i = 0; i < enemies.length; i++) {
+			if ((x + 1 == enemies[i].x || x - 1 == enemies[i].x || x == enemies[i].x) && (y - 1 == enemies[i].y || y + 1 == enemies[i].y || y == enemies[i].y)) {
+				hp--;
+				//combat(i);
 			}
+			else if (x < enemies[i].x) {
+				enemies[i].x--;
+			}
+			else if (x > enemies[i].x) {
+				enemies[i].x++;
+			}
+			else if (y < enemies[i].y) {
+				enemies[i].y--;
+			}
+			else if (y > enemies[i].y) {
+				enemies[i].y++;
+			}
+			//if we collide with AI
+			/*
+			if (enemies[i].x !== enemies[i + 1].x) {
+				enemies[i].x++;
+				enemies[i].y++;
+			}*/
 		}
 	}
 

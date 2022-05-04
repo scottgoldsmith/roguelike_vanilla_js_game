@@ -40,6 +40,8 @@
 	let spawnTotal = 2;//number of enemies to spawn
 	let wallTotal = 4;//number of interior walls to spawn
 	let existingInteriorWalls = 0;
+	const permWallsx = [];//where we store walls x
+	const permWallsy = [];//where we store walls y
 
 	let walls = [];
 
@@ -68,6 +70,8 @@
 	}
 
 	//spawn interior walls, not part of the outerbounds
+	let interiorWallsx = [];//array to track interior walls for collission detection
+	let interiorWallsy = [];//array to track interior walls for collission detection
 	spawnInteriorWall();
 
 	function spawnInteriorWall() {
@@ -78,6 +82,8 @@
 			if (w1x !== x && w1y !== y) {//don't spawn on player
 				var new_wall = new wall(w1x, w1y);
 				walls.push(new_wall);
+				interiorWallsx.push(w1x);
+				interiorWallsy.push(w1y);
 				existingInteriorWalls++;
 			}
 			else {
@@ -235,40 +241,53 @@
 
 	function runAI() {
 		//move all AI
+		//make separate array that statically lists all x/y wall spots
+		//then use IndexOf == -1 to prove the spot isn't a wall
 		for (var i = 0; i < enemies.length; i++) {
 			if ((x + 1 == enemies[i].x || x - 1 == enemies[i].x || x == enemies[i].x) && (y - 1 == enemies[i].y || y + 1 == enemies[i].y || y == enemies[i].y)) {
 				hp--;
-				//combat(i);
 			}
 			else if (x < enemies[i].x) {
 				enemies[i].x--;
+				for (var ii = 0; ii < walls.length; ii++) {
+					if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+						enemies[i].x++;//move enemy back
+					}
+				}
 			}
 			else if (x > enemies[i].x) {
 				enemies[i].x++;
+				for (var ii = 0; ii < walls.length; ii++) {
+					if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+						enemies[i].x--;//move enemy back
+					}
+				}
 			}
 			else if (y < enemies[i].y) {
 				enemies[i].y--;
+				for (var ii = 0; ii < walls.length; ii++) {
+					if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+						enemies[i].y++;//move enemy back
+					}
+				}
 			}
 			else if (y > enemies[i].y) {
 				enemies[i].y++;
+				for (var ii = 0; ii < walls.length; ii++) {
+					if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+						enemies[i].y--;//move enemy back
+					}
+				}
 			}
-			//if we collide with AI
-			/*
-			if (enemies[i].x !== enemies[i + 1].x) {
-				enemies[i].x++;
-				enemies[i].y++;
-			}*/
 		}
 	}
 
 	function draw() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		//Draws enemies
-		for (var i = 0; i < enemies.length; i++) {
+		for (var i = 0; i < enemies.length; i++) {//Draws enemies
 			enemies[i].show();
 		}
-		//Draws walls
-		for (var i = 0; i < walls.length; i++) {
+		for (var i = 0; i < walls.length; i++) {//Draws walls
 			walls[i].show();
 		}
 		ctx.font = "30px Arial";
@@ -289,7 +308,10 @@
 		}
 		//draw UI
 		ctx.fillText("HP: " + hp, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1), tileSize, tileSize);
-		ctx.fillText("Enemy Pop: " + enemies.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1) + 20, tileSize, tileSize);
+		ctx.fillText("Enemy Pop: " + enemies.length + " " + interiorWallsx.length, numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1) + 20, tileSize, tileSize);
+		for (var i = 0; i < interiorWallsx.length; i++) {
+			ctx.fillText(interiorWallsx[i] + " " + interiorWallsy[i], numTiles * tileSize + (tileSize / 2 - 3), tileSize - (tileSize / 2 - 1) + (20 * i) + 40, tileSize, tileSize);
+		}
 	}
 
 	setInterval(draw, 15);

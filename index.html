@@ -256,7 +256,10 @@
 
 	function dirChecker() {
 		for (var i = 0; i < enemies.length; i++) {
-			if (x < enemies[i].x) {
+			if ((x + 1 == enemies[i].x || x - 1 == enemies[i].x || x == enemies[i].x) && (y - 1 == enemies[i].y || y + 1 == enemies[i].y || y == enemies[i].y)) {
+				hp--;
+			}
+			else if (x < enemies[i].x) {
 				enemies[i].x--;
 				for (var ii = 0; ii < walls.length; ii++) {
 					if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
@@ -264,6 +267,30 @@
 							if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
 								enemies[i].x++;//move enemy back
 								//we need to now try a different direction
+								if (y < enemies[i].y) {
+									enemies[i].y--;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].y++;//move enemy back
+												}
+											}
+										}
+									}
+								}
+								else if (y > enemies[i].y) {
+									enemies[i].y++;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].y--;//move enemy back
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -276,6 +303,30 @@
 						for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
 							if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
 								enemies[i].x--;//move enemy back
+								if (y < enemies[i].y) {
+									enemies[i].y--;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].y++;//move enemy back
+												}
+											}
+										}
+									}
+								}
+								else if (y > enemies[i].y) {
+									enemies[i].y++;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].y--;//move enemy back
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -288,6 +339,32 @@
 						for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
 							if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
 								enemies[i].y++;//move enemy back
+								//try to left or right
+								if (x < enemies[i].x) {
+									enemies[i].x--;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].x++;//move enemy back
+													//we need to now try a different direction
+												}
+											}
+										}
+									}
+								}
+								else if (x > enemies[i].x) {
+									enemies[i].x++;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].x--;//move enemy back
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -300,7 +377,34 @@
 						for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
 							if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
 								enemies[i].y--;//move enemy back
+								//try to left or right
+								if (x < enemies[i].x) {
+									enemies[i].x--;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].x++;//move enemy back
+													//we need to now try a different direction
+												}
+											}
+										}
+									}
+								}
+								else if (x > enemies[i].x) {
+									enemies[i].x++;
+									for (var ii = 0; ii < walls.length; ii++) {
+										if (walls[ii].x == enemies[i].x && walls[ii].y == enemies[i].y) {
+											for (var iii = 0; iii < interiorWallsx.length; iii++) {//check interior walls
+												if (interiorWallsx[iii] == enemies[i].x && interiorWallsy[iii] == enemies[i].y) {
+													enemies[i].x--;//move enemy back
+												}
+											}
+										}
+									}
+								}
 							}
+
 						}
 					}
 				}

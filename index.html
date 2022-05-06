@@ -37,7 +37,7 @@
 	let y = 2;
 	let hp = 4;
 	let dmg = 1;
-	let spawnTotal = 2;//number of enemies to spawn
+	let spawnTotal = 1;//number of enemies to spawn
 	let wallTotal = 4;//number of interior walls to spawn
 	let existingInteriorWalls = 0;
 	const permWallsx = [];//where we store walls x
@@ -158,7 +158,7 @@
 					}
 				}
 			}
-			runAI();
+			dirChecker();
 		}
 		if (e.key == "s") {
 			if (y < numTiles) y++;
@@ -179,7 +179,7 @@
 					}
 				}
 			}
-			runAI();
+			dirChecker();
 		}
 
 		if (e.key == "a") {
@@ -192,6 +192,7 @@
 				for (var i = 0; i < enemies.length; i++) {
 					if (x == enemies[i].x && y == enemies[i].y) {
 						x++;//move back
+
 						combat(i);
 					}
 				}
@@ -201,7 +202,7 @@
 					}
 				}
 			}
-			runAI();
+			dirChecker();
 		}
 		if (e.key == "d") {
 			if (x < numTiles - 1) x++;
@@ -222,42 +223,28 @@
 					}
 				}
 			}
-			runAI();
+			dirChecker();
 		}
 		if (e.key == 'q') {//testing for ai movement/actions
-			runAI();
+			dirChecker();
 		}
 	}
 
 	function combat(i) {
 		enemies[i].hp -= dmg;//enemy loses hp relative to dmg
+		//alert(x + " " + y + " " + enemies[i].x + " " + enemies[i].y);
 		if (enemies[i].hp <= 0) {
 			enemies.splice(i, 1);//remove enemy
-		}
-		else if (enemies[i].hp >= dmg) {
-			hp--;//attacks player, b/c not dead
-		}
-	}
-
-	function runAI() {
-		//move all AI
-		//make separate array that statically lists all x/y wall spots
-		//then use IndexOf == -1 to prove the spot isn't a wall
-		for (var i = 0; i < enemies.length; i++) {
-			if ((x + 1 == enemies[i].x || x - 1 == enemies[i].x || x == enemies[i].x) && (y - 1 == enemies[i].y || y + 1 == enemies[i].y || y == enemies[i].y)) {
-				hp--;
-			}
-			else {
-				//check against direction
-				dirChecker();
-			}
 		}
 	}
 
 	function dirChecker() {
 		for (var i = 0; i < enemies.length; i++) {
-			if ((x + 1 == enemies[i].x || x - 1 == enemies[i].x || x == enemies[i].x) && (y - 1 == enemies[i].y || y + 1 == enemies[i].y || y == enemies[i].y)) {
-				hp--;
+			if (((x + 1 == enemies[i].x || x - 1 == enemies[i].x) && y == enemies[i].y) || ((y + 1 == enemies[i].y || y - 1 == enemies[i].y) && x == enemies[i].x)) {
+				if (enemies[i].hp >= dmg) {
+					hp--;//player hurt combat
+				}
+
 			}
 			else if (x < enemies[i].x) {
 				enemies[i].x--;
